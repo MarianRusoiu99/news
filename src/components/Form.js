@@ -24,7 +24,7 @@ export default function Form(){
             setToggle({show:false,text:"show more",picture:downArrow})
         }
     }
-
+//comment
     function handleChange(event) {
         const {name,value,type,checked} = event.target
         setFormData(prevFormData => {
