@@ -4,12 +4,27 @@ import {AppContext} from "../App"
 
 import DatePicker from "react-datepicker";
 
+import upArrow from "../media/up.png"
+import downArrow from "../media/down.png"
+import searchImg from "../media/search.png"
+
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Form(){
-    const { formData, setFormData , submmit, setSubmmit} = React.useContext(AppContext)
+    const { formData, setFormData ,submmit, setSubmmit} = React.useContext(AppContext)
 
-    console.log(formData)
+    const [toggle,setToggle] = React.useState({show:false,text:"show more",picture:downArrow})
+
+    const toggleAdavnced = function () {
+        if(toggle.show === false){
+            setToggle({show:true,text:"show less",picture:upArrow})
+            console.log(toggle)
+        }
+        else {
+            setToggle({show:false,text:"show more",picture:downArrow})
+        }
+    }
+
     function handleChange(event) {
         const {name,value,type,checked} = event.target
         setFormData(prevFormData => {
@@ -21,27 +36,72 @@ export default function Form(){
     }
     function handleSubmit(event){
         event.preventDefault();
-        setSubmmit(formData);
-        console.log(formData);
+        setSubmmit(prevSubmmit =>{
+            return {
+                ...prevSubmmit,
+                search:inputSearch(),
+                topic:inputTopic(),
+                pages:inputPages(),
+                lang:inputLang(),
+                country:inputCountry(),
+                date_from:inputDate_from(),
+                date_to:inputDate_to(),
+            }
+        });
+        // console.log(submmit,formData.date_from.getFullYear()+"%2F"+formData.date_from.getMonth()+"%2F"+formData.date_from.getDay());
     }
 
-    return(<div>
+    
+    const inputSearch = function(){
+        return formData.search.replace(" ","%20");
+  } 
+    const inputTopic = function(){
+        return formData.topic ? `&topic=${formData.topic.replace(" ","%20")}` : " "
+  }
+  const inputPages = function(){
+        return formData.pages ? `&page_size=${formData.pages}` : ""
+  }
+  const inputLang = function(){
+    return formData.lang ? `&lang=${formData.lang}` : ""
+  } 
+  const inputCountry = function(){
+    return formData.country ? `&country=${formData.country.replace(" ","%20")}` : ""
+  }
+  const inputDate_from = function(){
+    return formData.date_from ? `&from=${formData.date_from.getFullYear()+"%2F"+formData.date_from.getMonth()+"%2F"+formData.date_from.getDay()}` : ""
+  }
+  const inputDate_to = function(){
+    return formData.date_to ? `&to=${formData.date_to.getFullYear()+"%2F"+formData.date_to.getMonth()+"%2F"+formData.date_to.getDay()}` : ""
+  }
 
 
 
-       
+
+    return(<div className="form--container">
+
+        
+
+       {/* search */}
        <form onSubmit={handleSubmit}>
+       
         <input type = "text"
+        className="search"
         placeholder="Search news here!"
         onChange={handleChange}
         name="search"
         value={formData.search}/>
+
+{/* conditional rendering */}
+       {toggle.show && <div className="form--advanced">
+
+{/* topic */}
 
         <input type = "text"
         placeholder="Topic"
         onChange={handleChange}
         name="topic"
         value={formData.topic}/>
+
         <input type = "text"
         placeholder="Sources"
         onChange={handleChange}
@@ -54,9 +114,9 @@ export default function Form(){
              id="numPages"
              value={formData.favColor}
              onChange={handleChange}
-             name="numPages" 
+             name="pages" 
              >
-                <option value="">--Chose--</option>
+                <option value="">--How many news to show--</option>
                 <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
@@ -194,8 +254,9 @@ export default function Form(){
             </select>
 
 
-
-            <DatePicker selected={formData.date_from} onChange={(date) => setFormData(prevFormData => {
+            <p>Date</p>
+            <p>From</p>
+            <DatePicker name="date_from" value={formData.date_to} selected={formData.date_from} onChange={(date) => setFormData(prevFormData => {
                  return {
                     
                     ...prevFormData,
@@ -205,7 +266,8 @@ export default function Form(){
               
             }
                 )} />
-                <DatePicker selected={formData.date_to}  onChange={(date) => setFormData(prevFormData => {
+                 <p>To</p>
+                <DatePicker name="date_to" value={formData.date_to} selected={formData.date_to}  onChange={(date) => setFormData(prevFormData => {
                  return {
                     
                     ...prevFormData,
@@ -215,8 +277,12 @@ export default function Form(){
               
             }
                 )} />
-            <button >Submit</button>
-
+                </div>}
+            {/* toggle button */}
+            <div className="buttons">
+            <img src={toggle.picture} alt={toggle.text} type="button" className="show" onClick={toggleAdavnced}></img>
+            <button className="submmit"><img src={searchImg} alt="Search"></img></button>
+            </div>
        </form>
        
     </div>)

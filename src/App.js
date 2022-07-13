@@ -5,21 +5,23 @@ import Form from "./components/Form"
 import {createContext} from "react"
 
 
+
 export const AppContext = createContext()
 
 function App() {
 
   const [formData, setFormData] = React.useState(
-    {search: "Money", topic: "", pages: "6", lang:"", country:"", source:"" ,date_from:"",date_to:""}
+    {search: "Money", topic: "", pages:"" , lang:"", country:"", source:"" ,date_from: "",date_to:""}
 )
 
   // const [aux,setAux] = React.useState("default");
 
-  console.log(formData)
+  // console.log(formData)
   const [currNews,setCurrNews] = React.useState([])
+
   const [submmit,setSubmmit] = React.useState(formData)
   
-  var page_size = "page_size=6"
+ 
 
 
 
@@ -27,8 +29,8 @@ function App() {
 
 
 React.useEffect( ()=>{
-  console.log("effect triggered")
-  fetch(`https://free-news.p.rapidapi.com/v1/search?q=${inputSearch}${inputTopic}`, {
+  console.log(`https://free-news.p.rapidapi.com/v1/search?q=${submmit.search+submmit.lang+submmit.pages+submmit.country+submmit.topic+submmit.date_from+submmit.date_to}`)
+  fetch(`https://free-news.p.rapidapi.com/v1/search?q=${submmit.search} ${submmit.lang} ${submmit.pages} ${submmit.country} ${submmit.topic} ${submmit.date_from} ${submmit.date_to}`, {
 	method: 'GET',
 	headers: {
 		'X-RapidAPI-Key': '32a081deaemsh3fbb9a6e8cafed4p192a6fjsn8483b60e5f2d',
@@ -36,9 +38,9 @@ React.useEffect( ()=>{
 	}
 })
 	.then(response => response.json())
-	//  .then(response => console.log(response))
+  // .then(response => console.log(response))
   .then(response => setCurrNews(response.articles))
-	// .catch(err => console.error(err));
+	 .catch(err => console.error(err));
 
 
 },[submmit])
@@ -49,18 +51,11 @@ React.useEffect( ()=>{
 
 
 
-const inputSearch = function(){
-  return formData.search.replace(" ","%20");
-}
-const inputTopic = function(){
-  return formData.topic ? `&topic=${formData.topic.replace(" ","%20")}` : ""
-}
-
 
 
   return (
     
-  <div>
+  <div className="app--container">
     <AppContext.Provider value={{formData, setFormData, submmit, setSubmmit}}>
     {/* <form className="form" onSubmit={handleSubmit}>
             <input 
