@@ -33,7 +33,7 @@ React.useEffect( ()=>{
   fetch(`https://free-news.p.rapidapi.com/v1/search?q=${submmit.search} ${submmit.lang} ${submmit.pages} ${submmit.country} ${submmit.topic} ${submmit.date_from} ${submmit.date_to}`, {
 	method: 'GET',
 	headers: {
-		'X-RapidAPI-Key': '32a081deaemsh3fbb9a6e8cafed4p192a6fjsn8483b60e5f2d',
+		'X-RapidAPI-Key': '',
 		'X-RapidAPI-Host': 'free-news.p.rapidapi.com'
 	}
 })
